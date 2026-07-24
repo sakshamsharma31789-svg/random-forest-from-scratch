@@ -75,8 +75,15 @@ def should_stop(labels, depth, max_depth, min_samples_split):
     return is_pure or d or q
     pass
 
-# Step 6 - leaf_prediction (not yet solved)
-# TODO: implement
+# Step 6 - leaf_prediction
+def leaf_prediction(labels):
+    # TODO: choose a single class label to output for a leaf given the labels that reached it
+    labels = np.array(labels,dtype=int)
+    count = np.bincount(labels)
+    max = np.argmax(count)
+    return int(max)
+
+    pass
 
 # Step 7 - build_tree (not yet solved)
 # TODO: implement
