@@ -85,8 +85,53 @@ def leaf_prediction(labels):
 
     pass
 
-# Step 7 - build_tree (not yet solved)
-# TODO: implement
+# Step 7 - build_tree
+def build_tree(features, labels, max_depth=10, min_samples_split=2, feature_subset=None, depth=0):
+    if should_stop(labels, depth, max_depth, min_samples_split):
+        return {'leaf': True, 'prediction': int(leaf_prediction(labels))}
+    
+    # 2. Determine candidate features
+    if feature_subset is None:
+        candidate_features = list(range(features.shape[1]))
+    else:
+        candidate_features = list(feature_subset)
+        
+    # 3. Find the best split
+    split = best_split(features, labels, candidate_features)
+    
+    # Check if a valid split was found
+    if split['feature_index'] is None:
+        return {'leaf': True, 'prediction': int(leaf_prediction(labels))}
+    
+    feature_index = split['feature_index']
+    threshold = split['threshold']
+    
+    # 4. Partition the dataset using helper function
+    left_X, left_y, right_X, right_y = split_dataset(features, labels, feature_index, threshold)
+    
+    # 5. Fallback to leaf if either side is empty
+    if len(left_y) == 0 or len(right_y) == 0:
+        return {'leaf': True, 'prediction': int(leaf_prediction(labels))}
+    
+    # 6. Recurse on children
+    left_child = build_tree(
+        left_X, left_y, 
+        max_depth=max_depth, min_samples_split=min_samples_split, 
+        feature_subset=feature_subset, depth=depth + 1
+    )
+    right_child = build_tree(
+        right_X, right_y, 
+        max_depth=max_depth, min_samples_split=min_samples_split, 
+        feature_subset=feature_subset, depth=depth + 1
+    )
+    
+    return {
+        'leaf': False,
+        'feature_index': int(feature_index),
+        'threshold': float(threshold),
+        'left': left_child,
+        'right': right_child
+    }
 
 # Step 8 - predict_example_tree (not yet solved)
 # TODO: implement
