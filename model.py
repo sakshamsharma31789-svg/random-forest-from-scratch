@@ -133,8 +133,18 @@ def build_tree(features, labels, max_depth=10, min_samples_split=2, feature_subs
         'right': right_child
     }
 
-# Step 8 - predict_example_tree (not yet solved)
-# TODO: implement
+# Step 8 - predict_example_tree
+def predict_example_tree(tree, example):
+    # TODO: walk the example down the fitted tree until you reach a leaf, then return its prediction.
+    if tree.get('leaf',False):
+        return int(tree['prediction'])
+    feature_idx = tree['feature_index']
+    threshold = tree['threshold']
+    if example[feature_idx] <= threshold:
+        return predict_example_tree(tree['left'],example)
+    else:
+        return predict_example_tree(tree['right'],example)
+    pass
 
 # Step 9 - predict_tree (not yet solved)
 # TODO: implement
